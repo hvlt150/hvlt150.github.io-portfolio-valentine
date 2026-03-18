@@ -1,1 +1,707 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Valentine HU | Portfolio SISR</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;900&display=swap');
 
+        :root {
+            --netflix-red: #E50914;
+            --netflix-black: #141414;
+        }
+
+        /* SUPPRESSION DES SCROLLBARS */
+        * { scrollbar-width: none; -ms-overflow-style: none; }
+        *::-webkit-scrollbar { display: none; }
+
+        body {
+            background-color: var(--netflix-black);
+            color: white;
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
+            scroll-behavior: smooth;
+        }
+
+        #profile-screen {
+            background-color: var(--netflix-black);
+            transition: opacity 0.6s ease, visibility 0.6s;
+        }
+
+        .netflix-row {
+            display: flex;
+            overflow-x: auto;
+            scroll-behavior: smooth;
+            padding: 20px 0 40px 0;
+            gap: 12px;
+        }
+
+        .card {
+            min-width: 280px;
+            height: 158px;
+            background: #2f2f2f;
+            border-radius: 4px;
+            position: relative;
+            transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            cursor: pointer;
+            flex-shrink: 0;
+            overflow: hidden;
+        }
+        .card:hover { transform: scale(1.05); z-index: 100; box-shadow: 0 15px 30px rgba(0,0,0,0.7); }
+        .card img { width: 100%; height: 100%; object-fit: cover; }
+        
+        .card-info {
+            position: absolute;
+            bottom: 0; left: 0; right: 0;
+            background: linear-gradient(to top, rgba(0,0,0,1) 0%, rgba(0,0,0,0.8) 50%, transparent 100%);
+            padding: 20px 12px 12px;
+            z-index: 10;
+        }
+
+        .hero-vignette { background: linear-gradient(77deg, rgba(20,20,20,0.8) 0, rgba(20,20,20,0) 85%); }
+        .hero-bottom-vignette { background: linear-gradient(180deg, transparent, rgba(20,20,20,0.6), #141414); }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.92);
+            z-index: 4000;
+            overflow-y: auto;
+        }
+
+        .btn-netflix {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            border-radius: 4px;
+            transition: all 0.2s;
+            padding: 0 2rem;
+            height: 52px;
+            flex-shrink: 0;
+            cursor: pointer;
+            border: none;
+        }
+        .btn-white { background-color: white; color: black; }
+        .btn-white:hover { background-color: rgba(255,255,255,0.75); }
+        .btn-gray { background-color: rgba(109, 109, 110, 0.7); color: white; }
+        .btn-gray:hover { background-color: rgba(109, 109, 110, 0.4); }
+
+        .skills-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 25px;
+            margin-top: 20px;
+        }
+        .skill-category-block {
+            background: #181818;
+            border-radius: 8px;
+            padding: 25px;
+            border-top: 4px solid var(--netflix-red);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+        }
+        .skill-category-title {
+            font-size: 1.1rem;
+            font-weight: 900;
+            text-transform: uppercase;
+            margin-bottom: 20px;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .skill-unit {
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+        .skill-unit:last-child { border-bottom: none; }
+        .skill-name {
+            font-weight: 700;
+            color: var(--netflix-red);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 2px;
+            font-size: 0.9rem;
+        }
+        .skill-desc {
+            font-size: 0.8rem;
+            color: #b3b3b3;
+            line-height: 1.4;
+        }
+
+        .tab-btn {
+            position: relative;
+            padding-bottom: 15px;
+            color: #b3b3b3;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-size: 13px;
+            transition: 0.3s;
+        }
+        .tab-btn.active { color: white; }
+        .tab-btn.active::after {
+            content: ''; position: absolute; bottom: 0; left: 0; width: 100%; height: 4px; background-color: var(--netflix-red);
+        }
+
+        /* STYLE FORMULAIRE DE CONTACT */
+        .contact-box {
+            background-color: #181818;
+            color: white;
+            padding: 50px;
+            border-radius: 8px;
+            max-width: 850px;
+            margin: 0 auto;
+            border: 1px solid #333;
+        }
+        .contact-label {
+            display: block;
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: #e5e5e5;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        .contact-field {
+            width: 100%;
+            padding: 16px;
+            border: 1px solid #444;
+            border-radius: 4px;
+            margin-bottom: 25px;
+            font-size: 1rem;
+            color: white;
+            background-color: #333;
+            transition: all 0.3s;
+        }
+        .contact-field:focus {
+            outline: none;
+            border-color: var(--netflix-red);
+            background-color: #444;
+        }
+        .btn-envoyer {
+            background-color: var(--netflix-red);
+            color: white;
+            border: none;
+            padding: 18px 70px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            cursor: pointer;
+            border-radius: 4px;
+            transition: all 0.3s;
+            display: block;
+            width: 100%;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+        .btn-envoyer:hover { 
+            background-color: #ff0a16;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(229, 9, 20, 0.4);
+        }
+
+        #back-to-top {
+            position: fixed; bottom: 30px; right: 30px;
+            background-color: var(--netflix-red); color: white;
+            width: 50px; height: 50px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            cursor: pointer; z-index: 1500; opacity: 0; visibility: hidden; transition: all 0.4s;
+        }
+        #back-to-top.show { opacity: 1; visibility: visible; }
+
+        .form-status {
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 4px;
+            display: none;
+            text-align: center;
+            font-weight: bold;
+        }
+        .form-status.success { background: #46d369; color: white; display: block; }
+        .form-status.error { background: #e50914; color: white; display: block; }
+    </style>
+</head>
+<body>
+
+    <!-- ÉCRAN DE SÉLECTION DE PROFIL -->
+    <div id="profile-screen" class="fixed inset-0 z-[5000] flex flex-col items-center justify-center">
+        <h1 class="text-3xl md:text-5xl font-medium mb-12 italic tracking-tight text-white">Qui est-ce ?</h1>
+        <div onclick="enterPortfolio()" class="profile-card flex flex-col items-center gap-6 cursor-pointer group">
+            <div class="relative w-32 h-32 md:w-44 md:h-44 rounded overflow-hidden transition-all duration-300">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/0/0b/Netflix-avatar.png" class="w-full h-full object-cover" alt="Valentine Profil">
+            </div>
+            <span class="text-gray-500 group-hover:text-white text-2xl font-medium transition-colors uppercase tracking-widest text-center">Valentine</span>
+        </div>
+    </div>
+
+    <!-- CONTENU DE L'APPLICATION -->
+    <div id="app-content" class="opacity-0">
+        
+        <nav id="navbar" class="fixed top-0 w-full z-[3000] flex items-center justify-between px-6 md:px-14 py-5 transition-all duration-500 bg-gradient-to-b from-black/95 to-transparent">
+            <div class="flex items-center gap-8 md:gap-12">
+                <h1 class="text-[#E50914] font-black text-2xl md:text-3xl lg:text-4xl tracking-tighter cursor-pointer flex-shrink-0 uppercase italic">Valentine HU</h1>
+                <ul class="hidden lg:flex items-center gap-6 text-sm font-medium">
+                    <li><a href="#" class="text-white">Accueil</a></li>
+                    <li><a href="#profil" class="text-gray-300 hover:text-white transition">Profil</a></li>
+                    <li><a href="#series" class="text-gray-300 hover:text-white transition">Compétences</a></li>
+                    <li><a href="#projets" class="text-gray-300 hover:text-white transition">Projets</a></li>
+                    <li><a href="#liste" class="text-gray-300 hover:text-white transition">Stages</a></li>
+                    <li><a href="#contact" class="text-gray-300 hover:text-white transition">Contact</a></li>
+                </ul>
+            </div>
+            <div class="flex items-center gap-6">
+                <i data-lucide="search" class="w-5 h-5 text-white cursor-pointer"></i>
+                <i data-lucide="bell" class="w-5 h-5 text-white cursor-pointer"></i>
+                <img src="https://upload.wikimedia.org/wikipedia/commons/0/0b/Netflix-avatar.png" class="w-8 h-8 rounded cursor-pointer" alt="Avatar" onclick="openFullProfile()">
+            </div>
+        </nav>
+
+        <!-- Section Hero -->
+        <header class="relative w-full min-h-[95vh] flex items-center overflow-hidden pt-32 pb-12">
+            <div class="absolute inset-0 z-0">
+                <img src="https://images.unsplash.com/photo-1558494949-ef010cbdcc51?q=80&w=2000" class="w-full h-full object-cover brightness-75" alt="Infrastructure Hero">
+                <div class="absolute inset-0 hero-vignette"></div>
+                <div class="absolute inset-0 hero-bottom-vignette"></div>
+            </div>
+            <div class="relative z-10 px-6 md:px-14 max-w-4xl mt-10">
+                <div class="flex items-center gap-3 mb-6">
+                    <span class="bg-red-600 text-white font-black text-lg px-2 rounded-sm shadow-xl">V</span>
+                    <span class="tracking-[.4em] font-bold text-gray-200 text-xs uppercase text-white shadow-black drop-shadow-lg">Valentine HU • Portfolio SISR</span>
+                </div>
+                <h2 class="text-5xl md:text-7xl lg:text-8xl font-black mb-8 uppercase italic tracking-tighter leading-[1.1] drop-shadow-2xl">BTS SIO <br> OPTION SISR</h2>
+                <div class="flex items-center gap-4 mb-6 text-lg font-bold">
+                    <span class="border border-gray-600 px-2 rounded text-sm font-normal text-white">Saison 2024-2026</span>
+                    <span class="text-gray-300">Formation d'Expert</span>
+                    <span class="badge-new text-white shadow-lg uppercase">En cours</span>
+                </div>
+                
+                <p class="text-lg md:text-xl text-white mb-10 max-w-2xl drop-shadow-2xl font-medium leading-relaxed">
+                    Le <strong>BTS Services Informatiques aux Organisations</strong> (SIO) est un diplôme d'État formant les experts du numérique de demain. Il prépare les étudiants à concevoir, maintenir et sécuriser les parcs informatiques ou à développer des solutions applicatives pour accompagner la transformation digitale des entreprises.
+                </p>
+
+                <div class="flex flex-wrap gap-4 items-center">
+                    <button onclick="openBTSPresentation()" class="btn-netflix btn-white gap-3 shadow-xl">
+                        <i data-lucide="play" class="fill-current w-6 h-6"></i> <span>Voir le BTS</span>
+                    </button>
+                    <button onclick="openFullProfile()" class="btn-netflix btn-gray gap-3 backdrop-blur-md">
+                        <i data-lucide="info" class="w-6 h-6"></i> <span>Voir mon profil</span>
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <main class="relative z-20 pb-20 space-y-24 -mt-16">
+            
+            <!-- SECTION PROFIL -->
+            <section id="profil" class="px-6 md:px-14 pt-32">
+                <h3 class="text-2xl md:text-3xl font-bold mb-6 flex items-center gap-2 text-white">Mon Portrait <i data-lucide="chevron-right" class="w-6 h-6 text-gray-500"></i></h3>
+                <div class="netflix-row">
+                    <div class="card" onclick="openFullProfile()" style="min-width: 320px; height: 180px;">
+                        <img src="https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?q=80&w=800" alt="Valentine">
+                        <div class="card-info">
+                            <h4 class="font-black text-sm uppercase italic text-white">Valentine HU - SISR</h4>
+                            <p class="text-[10px] text-gray-400 mt-1">À propos & Bienvenue</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SECTION COMPÉTENCES -->
+            <section id="series" class="px-6 md:px-14 pt-10">
+                <h3 class="text-2xl md:text-3xl font-bold mb-10 flex items-center gap-2 text-white">Grille de Compétences <i data-lucide="chevron-right" class="w-6 h-6 text-gray-500"></i></h3>
+                
+                <div class="skills-container">
+                    <div class="skill-category-block">
+                        <div class="skill-category-title"><i data-lucide="network" class="mr-2"></i> Réseaux & Systèmes</div>
+                        <div class="skill-unit">
+                            <div class="skill-name">Protocoles & Services</div>
+                            <div class="skill-desc">Modèle <strong>OSI</strong>, <strong>TCP/IP</strong> et <strong>ICMP</strong>. Configuration <strong>DHCP</strong>, <strong>DNS</strong> et <strong>NAT</strong>.</div>
+                        </div>
+                        <div class="skill-unit">
+                            <div class="skill-name">Administration</div>
+                            <div class="skill-desc">Windows, Linux, <strong>AD</strong> (Active Directory), <strong>GPO</strong> (Group Policy Objects).</div>
+                        </div>
+                    </div>
+
+                    <div class="skill-category-block">
+                        <div class="skill-category-title"><i data-lucide="terminal" class="mr-2"></i> Scripting & Outils</div>
+                        <div class="skill-unit">
+                            <div class="skill-name">Scripting</div>
+                            <div class="skill-desc">Automatisation via fichiers <strong>Bat</strong>, scripts <strong>Powershell</strong> et commandes <strong>CMD</strong>.</div>
+                        </div>
+                        <div class="skill-unit">
+                            <div class="skill-name">Virtualisation</div>
+                            <div class="skill-desc">Utilisation de <strong>VMware</strong> et <strong>VirtualBox</strong> pour la simulation d'infrastructures.</div>
+                        </div>
+                        <div class="skill-unit">
+                            <div class="skill-name">Gestion IT</div>
+                            <div class="skill-desc">Ticketing et inventaire via <strong>GLPI</strong> (Gestionnaire Libre de Parc Informatique).</div>
+                        </div>
+                    </div>
+
+                    <div class="skill-category-block">
+                        <div class="skill-category-title"><i data-lucide="code-2" class="mr-2"></i> Web & Dev</div>
+                        <div class="skill-unit">
+                            <div class="skill-name">Langages Web</div>
+                            <div class="skill-desc">
+                                Apprentissage <strong>Python</strong> (Bootcamp). Maîtrise de la structure via <strong>HTML</strong> (<em>HyperText Markup Language</em>) et du design via <strong>CSS</strong> (<em>Cascading Style Sheets</em>).
+                            </div>
+                        </div>
+                        <div class="skill-unit">
+                            <div class="skill-name">Bases de données</div>
+                            <div class="skill-desc">
+                                Gestion et manipulation de données via <strong>SQL</strong> (<em>Structured Query Language</em>) sur <strong>MySQL</strong> et <strong>MariaDB</strong>.
+                            </div>
+                        </div>
+                        <div class="skill-unit">
+                            <div class="skill-name">Gestion de contenu</div>
+                            <div class="skill-desc">
+                                Utilisation de <strong>CMS</strong> (<em>Content Management System</em>) tels que <strong>WordPress</strong> et <strong>JOOMLA</strong> pour la gestion simplifiée de sites web.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SECTION PROJETS -->
+            <section id="projets" class="px-6 md:px-14 pt-10">
+                <h3 class="text-2xl md:text-3xl font-bold mb-6 flex items-center gap-2 text-white">Mes Projets Réalisés <i data-lucide="chevron-right" class="w-6 h-6 text-gray-500"></i></h3>
+                <div class="netflix-row">
+                    <div class="card" onclick="openModal('proj-bootcamp')">
+                        <img src="https://images.unsplash.com/photo-1515879218367-8466d910aaa4?q=80&w=600" alt="Python Bootcamp">
+                        <div class="card-info"><h4 class="font-black text-sm uppercase">Boot Camp Python</h4></div>
+                    </div>
+                    <div class="card" onclick="openModal('proj-gsb')">
+                        <img src="https://images.unsplash.com/photo-1576091160550-2173dba999ef?q=80&w=600" alt="GSB Project">
+                        <div class="card-info"><h4 class="font-black text-sm uppercase">Projet GSB</h4></div>
+                    </div>
+                    <div class="card" onclick="openModal('proj-hardware')">
+                        <img src="https://images.unsplash.com/photo-1562813733-b31f71025d54?q=80&w=600" alt="Maintenance hardware">
+                        <div class="card-info"><h4 class="font-black text-sm uppercase">Maintenance & Hardware</h4></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SECTION STAGES -->
+            <section id="liste" class="px-6 md:px-14 pt-10">
+                <h3 class="text-2xl md:text-3xl font-bold mb-6 flex items-center gap-2 text-white">Mes Stages & Documents <i data-lucide="chevron-right" class="w-6 h-6 text-gray-500"></i></h3>
+                <div class="netflix-row">
+                    <div class="card" onclick="openModal('stage-xelya-2')">
+                        <div class="absolute inset-0 bg-zinc-800 p-6 flex flex-col justify-center border-l-4 border-red-600">
+                            <h4 class="font-black text-lg uppercase italic text-white">Xelya (Stage 2)</h4>
+                            <p class="text-xs text-gray-400 mt-2">Fin 2025 - Début 2026</p>
+                        </div>
+                    </div>
+                    <div class="card" onclick="openModal('stage-xelya-1')">
+                        <div class="absolute inset-0 bg-zinc-800 p-6 flex flex-col justify-center border-l-4 border-gray-400">
+                            <h4 class="font-black text-lg uppercase italic text-white">Xelya (Stage 1)</h4>
+                            <p class="text-xs text-gray-400 mt-2">Mai - Juin 2025</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SECTION CONTACT -->
+            <section id="contact" class="px-6 md:px-14 pt-10 pb-20">
+                <div class="max-w-4xl mx-auto">
+                    <h3 class="text-3xl md:text-5xl font-black uppercase italic mb-10 text-white tracking-tighter text-center">Me contacter</h3>
+                    
+                    <div class="contact-box shadow-2xl">
+                        <div id="form-message" class="form-status"></div>
+                        
+                        <form id="contact-form">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-x-10">
+                                <div>
+                                    <label class="contact-label">Prénom</label>
+                                    <input type="text" name="firstname" class="contact-field" placeholder="Votre prénom">
+                                </div>
+                                <div>
+                                    <label class="contact-label">Nom de famille</label>
+                                    <input type="text" name="lastname" class="contact-field" placeholder="Votre nom de famille">
+                                </div>
+                            </div>
+
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-x-10">
+                                <div>
+                                    <label class="contact-label">E-mail *</label>
+                                    <input type="email" name="email" required class="contact-field" placeholder="Votre adresse e-mail">
+                                </div>
+                                <div>
+                                    <label class="contact-label">Téléphone</label>
+                                    <input type="tel" name="phone" class="contact-field" placeholder="Votre numéro">
+                                </div>
+                            </div>
+
+                            <div>
+                                <label class="contact-label">Objet</label>
+                                <input type="text" name="_subject" class="contact-field" placeholder="L'objet de votre demande">
+                            </div>
+
+                            <div>
+                                <label class="contact-label">Message *</label>
+                                <textarea name="message" required rows="6" class="contact-field resize-none" placeholder="Décrivez votre projet ou question..."></textarea>
+                            </div>
+
+                            <div class="mt-4">
+                                <button type="submit" id="submit-btn" class="btn-envoyer">
+                                    Envoyer le message
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <footer class="px-6 md:px-14 py-20 bg-black text-gray-500 text-sm border-t border-zinc-900 text-center">
+            <div class="mb-6">
+                <h4 class="text-white text-xs font-bold uppercase tracking-widest opacity-80">Autres</h4>
+            </div>
+            <div class="flex justify-center gap-8 mb-8">
+                <a href="https://linkedin.com/in/valentine-hu" target="_blank" class="hover:text-white transition"><i data-lucide="linkedin"></i></a>
+                <!-- CHANGEMENT : LIEN GITHUB MIS À JOUR -->
+                <a href="https://github.com/hvlt150" target="_blank" class="hover:text-white transition"><i data-lucide="github"></i></a>
+            </div>
+            <p class="text-[10px] tracking-widest uppercase font-semibold opacity-60">© 2024 Valentine HU - Portfolio SISR</p>
+        </footer>
+    </div>
+
+    <button id="back-to-top" onclick="scrollToTop()" aria-label="Retour en haut"><i data-lucide="arrow-up" class="w-6 h-6"></i></button>
+
+    <!-- MODALE UNIQUE DÉTAILS -->
+    <div id="modal-container" class="modal">
+        <div class="min-h-screen flex items-center justify-center p-4">
+            <div class="bg-[#181818] w-full max-w-4xl rounded-xl overflow-hidden shadow-2xl relative text-white">
+                <button onclick="closeModal()" class="absolute top-4 right-4 z-[2100] bg-black/70 p-2 rounded-full hover:bg-black transition"><i data-lucide="x" class="w-6 h-6"></i></button>
+                <div class="h-80 relative bg-cover bg-center shadow-inner" id="modal-image"><div class="absolute inset-0 bg-gradient-to-t from-[#181818] via-transparent to-black/20"></div></div>
+                <div class="p-10">
+                    <h2 class="text-4xl font-black uppercase italic mb-6 border-l-4 border-red-600 pl-4" id="modal-title">Titre</h2>
+                    <div id="modal-description" class="text-gray-300 leading-relaxed text-xl font-light mb-8"></div>
+                    <div id="pdf-action" class="hidden">
+                        <a id="pdf-link" href="#" target="_blank" class="btn-netflix btn-white gap-3"><i data-lucide="external-link" class="w-5 h-5"></i> Ouvrir le document</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODALE PRÉSENTATION BTS SIO -->
+    <div id="bts-presentation-modal" class="modal" style="background: rgba(0,0,0,0.95);">
+        <div class="min-h-screen flex flex-col items-center py-10 px-4">
+            <div class="bg-[#181818] w-full max-w-5xl rounded-xl overflow-hidden shadow-2xl relative text-white animate-in zoom-in duration-300">
+                <button onclick="closeBTSPresentation()" class="absolute top-6 right-6 z-[3500] bg-[#181818] p-2 rounded-full border border-gray-600 hover:bg-white hover:text-black transition"><i data-lucide="x" class="w-6 h-6"></i></button>
+                <div class="relative h-[400px] bg-cover bg-center" style="background-image: url('https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?q=80&w=2000');"><div class="absolute inset-0 bg-gradient-to-t from-[#181818] via-transparent to-black/20"></div><div class="absolute bottom-12 left-12"><h1 class="text-5xl md:text-7xl font-black uppercase italic tracking-tighter mb-4 text-white text-center w-full">LE BTS SIO</h1></div></div>
+                <div class="px-12 py-8">
+                    <div class="flex gap-10 border-b border-gray-700 mb-8 overflow-x-auto whitespace-nowrap">
+                        <button onclick="switchBTSTab('definition')" id="tab-bts-definition" class="tab-btn active">Aperçu</button>
+                        <button onclick="switchBTSTab('sisr')" id="tab-bts-sisr" class="tab-btn">Option SISR</button>
+                        <button onclick="switchBTSTab('slam')" id="tab-bts-slam" class="tab-btn">Option SLAM</button>
+                    </div>
+                    <div id="content-bts-definition" class="bts-tab-content">
+                        <p class="text-xl text-white italic">"Brevet de Technicien Supérieur - Services Informatiques aux Organisations"</p>
+                        <p class="mt-4 text-gray-300">Le diplôme forme à la mise en place de services informatiques et à la gestion de projets numériques au sein d'organisations publiques ou privées.</p>
+                    </div>
+                    <div id="content-bts-sisr" class="bts-tab-content hidden"><h3 class="text-3xl font-black text-red-600 mb-4">SISR (Infrastructure, Systèmes et Réseaux)</h3><p class="text-lg text-white">Spécialité focalisée sur l'installation, la maintenance et la sécurisation des infrastructures réseau. Gestion de serveurs, équipements d'interconnexion (Cisco) et garantie de haute disponibilité.</p></div>
+                    <div id="content-bts-slam" class="bts-tab-content hidden"><h3 class="text-3xl font-black text-blue-500 mb-4">SLAM (Logiciels et Applications Métier)</h3><p class="text-lg text-white">Formation au développement d'applications mobiles, web et logicielles. Inclut la conception d'algorithmes, la gestion des bases de données et le cycle de vie d'un produit logiciel.</p></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- PAGE DE DÉTAILS PROFIL -->
+    <div id="profile-detail-modal" class="modal" style="background: rgba(0,0,0,0.95);">
+        <div class="min-h-screen flex flex-col items-center py-10 px-4">
+            <div class="bg-[#181818] w-full max-w-5xl rounded-xl overflow-hidden shadow-2xl relative text-white animate-in zoom-in duration-300">
+                <button onclick="closeFullProfile()" class="absolute top-6 right-6 z-[3500] bg-[#181818] p-2 rounded-full border border-gray-600 hover:bg-white hover:text-black transition"><i data-lucide="x" class="w-6 h-6"></i></button>
+                <div class="relative h-[450px] bg-cover bg-center" style="background-image: url('https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?q=80&w=2000');">
+                    <div class="absolute inset-0 bg-gradient-to-t from-[#181818] via-transparent to-black/20"></div>
+                    <div class="absolute bottom-12 left-12">
+                        <h1 class="text-6xl md:text-8xl font-black uppercase italic mb-4 text-white tracking-tighter">VALENTINE HU</h1>
+                        <a href="https://b326d9c1-8eaf-4752-9f90-4fa5dca9f16c.filesusr.com/ugd/3beb29_749f5a548e3c4b77ad238b48a60a2b50.pdf" target="_blank" class="btn-netflix btn-white gap-2 px-10"><i data-lucide="download"></i> Télécharger CV (PDF)</a>
+                    </div>
+                </div>
+                <div class="px-12 py-8">
+                    <div class="flex gap-10 border-b border-gray-700 mb-8 overflow-x-auto whitespace-nowrap">
+                        <button onclick="switchTab('cv-profil')" id="tab-cv-profil" class="tab-btn active">Profil</button>
+                        <button onclick="switchTab('cv-formation')" id="tab-cv-formation" class="tab-btn">Formation</button>
+                        <button onclick="switchTab('cv-certifs')" id="tab-cv-certifs" class="tab-btn">Certifications</button>
+                        <button onclick="switchTab('cv-langues')" id="tab-cv-langues" class="tab-btn">Langues & Intérêts</button>
+                    </div>
+
+                    <div id="content-cv-profil" class="tab-content-cv text-white">
+                        <p class="text-2xl italic leading-relaxed text-gray-200 mb-8">"Déterminée, sérieuse, autonome et consciente du travail qui m'attend, je suis persuadée que je serai un élément moteur au sein de votre structure !"</p>
+                        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
+                            <div class="bg-zinc-800 p-4 rounded border-b-2 border-red-600 uppercase text-xs font-bold tracking-widest text-white">Organisée</div>
+                            <div class="bg-zinc-800 p-4 rounded border-b-2 border-red-600 uppercase text-xs font-bold tracking-widest text-white">Assidue</div>
+                            <div class="bg-zinc-800 p-4 rounded border-b-2 border-red-600 uppercase text-xs font-bold tracking-widest text-white">Motivée</div>
+                            <div class="bg-zinc-800 p-4 rounded border-b-2 border-red-600 uppercase text-xs font-bold tracking-widest text-white">Ponctuelle</div>
+                        </div>
+                    </div>
+
+                    <div id="content-cv-formation" class="tab-content-cv hidden text-white">
+                        <div class="space-y-6">
+                            <div class="border-l-4 border-red-600 pl-6">
+                                <h4 class="text-xl font-bold uppercase">BTS SIO (Option SISR)</h4>
+                                <p class="text-gray-400">2024-2026 (en cours)</p>
+                            </div>
+                            <div class="border-l-4 border-gray-600 pl-6">
+                                <h4 class="text-xl font-bold uppercase">Baccalauréat Général</h4>
+                                <p class="text-gray-400">2021-2024 • Spécialités : LLCER Anglais, SES • Option : Mathématiques complémentaires</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="content-cv-certifs" class="tab-content-cv hidden text-white">
+                        <ul class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <li class="flex items-center gap-3 bg-zinc-800/50 p-4 rounded"><i data-lucide="shield-check" class="text-red-600"></i> SecNum ANSSI</li>
+                            <li class="flex items-center gap-3 bg-zinc-800/50 p-4 rounded"><i data-lucide="network" class="text-red-600"></i> Netacad Network</li>
+                            <li class="flex items-center gap-3 bg-zinc-800/50 p-4 rounded"><i data-lucide="lock" class="text-red-600"></i> RGPD</li>
+                            <li class="flex items-center gap-3 bg-zinc-800/50 p-4 rounded"><i data-lucide="award" class="text-red-600"></i> PIX / CTF : Passe ton hack</li>
+                        </ul>
+                    </div>
+
+                    <div id="content-cv-langues" class="tab-content-cv hidden text-white">
+                        <div class="grid md:grid-cols-2 gap-12">
+                            <div>
+                                <h4 class="text-xl font-bold text-red-600 mb-4 uppercase">Langues</h4>
+                                <ul class="space-y-2 text-gray-200">
+                                    <li class="flex justify-between border-b border-zinc-800 pb-1">Chinois <span>Bilingue</span></li>
+                                    <li class="flex justify-between border-b border-zinc-800 pb-1">Anglais <span>Bilingue</span></li>
+                                    <li class="flex justify-between border-b border-zinc-800 pb-1">Espagnol <span>Niveau scolaire</span></li>
+                                </ul>
+                            </div>
+                            <div>
+                                <h4 class="text-xl font-bold text-red-600 mb-4 uppercase">Intérêts</h4>
+                                <p class="text-gray-200">Art (Musée, Exposition) • Sport (Pilates, Volleyball, F1)</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        lucide.createIcons();
+
+        function enterPortfolio() {
+            document.getElementById('profile-screen').style.opacity = '0';
+            document.getElementById('profile-screen').style.visibility = 'hidden';
+            setTimeout(() => {
+                document.getElementById('app-content').classList.remove('opacity-0');
+                document.getElementById('app-content').classList.add('opacity-100', 'transition-opacity', 'duration-1000');
+                lucide.createIcons();
+                window.scrollTo(0, 0);
+            }, 600);
+        }
+
+        function openBTSPresentation() { document.getElementById('bts-presentation-modal').style.display = 'block'; document.body.style.overflow = 'hidden'; lucide.createIcons(); }
+        function closeBTSPresentation() { document.getElementById('bts-presentation-modal').style.display = 'none'; document.body.style.overflow = 'auto'; }
+        
+        function switchBTSTab(tabId) {
+            document.querySelectorAll('#bts-presentation-modal .tab-btn').forEach(btn => btn.classList.remove('active'));
+            document.getElementById('tab-bts-' + tabId).classList.add('active');
+            document.querySelectorAll('.bts-tab-content').forEach(content => content.classList.add('hidden'));
+            document.getElementById('content-bts-' + tabId).classList.remove('hidden');
+            lucide.createIcons();
+        }
+
+        function openFullProfile() { document.getElementById('profile-detail-modal').style.display = 'block'; document.body.style.overflow = 'hidden'; lucide.createIcons(); }
+        function closeFullProfile() { document.getElementById('profile-detail-modal').style.display = 'none'; document.body.style.overflow = 'auto'; }
+        
+        function switchTab(tabId) {
+            document.querySelectorAll('#profile-detail-modal .tab-btn').forEach(btn => btn.classList.remove('active'));
+            document.getElementById('tab-' + tabId).classList.add('active');
+            document.querySelectorAll('.tab-content-cv').forEach(content => content.classList.add('hidden'));
+            document.getElementById('content-' + tabId).classList.remove('hidden');
+            lucide.createIcons();
+        }
+
+        function openModal(id) {
+            const data = content[id] || { title: "Détails", desc: "Contenu...", img: "" };
+            document.getElementById('modal-title').innerText = data.title;
+            document.getElementById('modal-description').innerHTML = data.desc;
+            document.getElementById('modal-image').style.backgroundImage = `url('${data.img}')`;
+            
+            const pdfAction = document.getElementById('pdf-action');
+            if (data.pdf) { pdfAction.classList.remove('hidden'); document.getElementById('pdf-link').href = data.pdf; }
+            else { pdfAction.classList.add('hidden'); }
+
+            document.getElementById('modal-container').style.display = 'block';
+            document.body.style.overflow = 'hidden';
+            lucide.createIcons();
+        }
+
+        function closeModal() { document.getElementById('modal-container').style.display = 'none'; document.body.style.overflow = 'auto'; }
+
+        // SCRIPT AJAX FORMSPREE
+        const form = document.getElementById("contact-form");
+        const statusMsg = document.getElementById("form-message");
+        const submitBtn = document.getElementById("submit-btn");
+
+        if (form) {
+            form.addEventListener("submit", async function(event) {
+                event.preventDefault();
+                statusMsg.className = "form-status";
+                statusMsg.innerHTML = "Envoi en cours...";
+                statusMsg.style.display = "block";
+                submitBtn.disabled = true;
+
+                const data = new FormData(event.target);
+                
+                fetch("https://formspree.io/f/xeervzny", {
+                    method: "POST",
+                    body: data,
+                    headers: {
+                        'Accept': 'application/json'
+                    }
+                }).then(response => {
+                    if (response.ok) {
+                        statusMsg.innerHTML = "Merci ! Votre message a été envoyé avec succès.";
+                        statusMsg.classList.add("success");
+                        form.reset();
+                    } else {
+                        response.json().then(data => {
+                            if (Object.hasOwn(data, 'errors')) {
+                                statusMsg.innerHTML = data["errors"].map(error => error["message"]).join(", ");
+                            } else {
+                                statusMsg.innerHTML = "Oups ! Un problème est survenu lors de l'envoi.";
+                            }
+                        })
+                        statusMsg.classList.add("error");
+                    }
+                }).catch(error => {
+                    statusMsg.innerHTML = "Oups ! Impossible de contacter le serveur.";
+                    statusMsg.classList.add("error");
+                }).finally(() => {
+                    submitBtn.disabled = false;
+                });
+            });
+        }
+
+        const content = {
+            'proj-bootcamp': { title: "Boot Camp Python (2024)", desc: "Formation intensive focalisée sur l'apprentissage du langage <strong>Python</strong> et le développement de jeux interactifs.", img: "https://images.unsplash.com/photo-1515879218367-8466d910aaa4?q=80&w=1000" },
+            'proj-gsb': { title: "Projet GSB", desc: "Gestion d'une base de données <strong>MySQL/MariaDB</strong> et développement d'interfaces PHP pour un laboratoire médical.", img: "https://images.unsplash.com/photo-1576091160550-2173dba999ef?q=80&w=1000" },
+            'proj-hardware': { title: "Projets Réalisés", desc: "• <strong>Changement de disque dur</strong> : Maintenance physique.<br>• <strong>Destruction de données</strong> : Sécurisation serveurs.<br>• <strong>Déploiement de PC</strong> : Intégration domaine.", img: "https://images.unsplash.com/photo-1562813733-b31f71025d54?q=80&w=1000" },
+            'stage-xelya-2': { title: "Xelya (Stage 2)", desc: "Support N1/N2, assistance sur les demandes courantes, interventions clients et supervision réseau (monitoring).", img: "https://images.unsplash.com/photo-1497366216548-37526070297c?q=80&w=1000" },
+            'stage-xelya-1': { title: "Xelya (Stage 1)", desc: "Support N1, interventions chez des clients et déploiement/configuration de postes de travail (Win 10/11).", img: "https://images.unsplash.com/photo-1497215842964-222b430dc094?q=80&w=2200" }
+        };
+
+        window.addEventListener('scroll', () => {
+            const nav = document.getElementById('navbar');
+            const btn = document.getElementById('back-to-top');
+            if (window.scrollY > 50) { nav.style.backgroundColor = 'rgba(20,20,20,0.98)'; btn.classList.add('show'); }
+            else { nav.style.backgroundColor = 'transparent'; btn.classList.remove('show'); }
+        });
+
+        function scrollToTop() { window.scrollTo({ top: 0, behavior: 'smooth' }); }
+        window.onclick = (e) => { if (e.target.classList.contains('modal')) { closeModal(); closeFullProfile(); closeBTSPresentation(); } };
+    </script>
+</body>
+</html>
